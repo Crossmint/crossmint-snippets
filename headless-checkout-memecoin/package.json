@@ -2,7 +2,7 @@
   "name": "headless-checkout-memecoin",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3002"
+    "dev": "next dev -p 3000"
   },
   "dependencies": {
     "@crossmint/client-sdk-react-ui": "2.6.15",

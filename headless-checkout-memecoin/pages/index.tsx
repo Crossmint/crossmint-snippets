@@ -12,6 +12,7 @@ export default function Home() {
     const [email, setEmail] = useState("");
     const [amount, setAmount] = useState("1");
     const [order, setOrder] = useState<OrderResponse | null>(null);
+    const [orderStatus, setOrderStatus] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -61,7 +62,6 @@ export default function Home() {
                 <h1>Checkout</h1>
                 <CrossmintProvider apiKey={clientApiKey}>
                     <CrossmintEmbeddedCheckout
-                        recipient={{ walletAddress: wallet }}
                         clientSecret={order.clientSecret}
                         orderId={order.order.orderId}
                         payment={{
@@ -78,7 +78,42 @@ export default function Home() {
                         }}
                     />
                 </CrossmintProvider>
-                <button onClick={() => setOrder(null)} style={{ marginTop: 20 }}>Start Over</button>
+                <div style={{ marginTop: 20, display: "flex", gap: 12, flexWrap: "wrap" }}>
+                    <button
+                        onClick={async () => {
+                            setError("");
+                            setOrderStatus(null);
+                            try {
+                                const res = await fetch(`/api/get-order?orderId=${encodeURIComponent(order.order.orderId)}`);
+                                const data = await res.json();
+                                if (!res.ok) {
+                                    setError(JSON.stringify(data, null, 2));
+                                    return;
+                                }
+                                setOrderStatus(data);
+                            } catch (err: any) {
+                                setError(err.message);
+                            }
+                        }}
+                    >
+                        Check status
+                    </button>
+                    <button
+                        onClick={() => {
+                            setOrder(null);
+                            setOrderStatus(null);
+                            setError("");
+                        }}
+                    >
+                        Start over
+                    </button>
+                </div>
+                {error && <pre style={{ color: "red", marginTop: 20 }}>{error}</pre>}
+                {orderStatus && (
+                    <pre style={{ marginTop: 20, background: "#f6f8fa", padding: 12, overflow: "auto" }}>
+                        {JSON.stringify(orderStatus, null, 2)}
+                    </pre>
+                )}
             </div>
         );
     }

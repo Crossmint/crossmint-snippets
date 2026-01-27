@@ -13,9 +13,11 @@ Minimal Next.js app to test a memecoin checkout flow using Crossmint Headless Ch
 pnpm install
 ```
 
-Create `./.env.local`:
+Create `./.env.local` (start from the example file):
 
 ```bash
+cp .env.example .env.local
+
 # Client (safe to expose; used in the browser)
 NEXT_PUBLIC_CROSSMINT_CLIENT_API_KEY=...
 
@@ -32,7 +34,9 @@ CROSSMINT_SERVER_API_KEY=...
 pnpm dev
 ```
 
-Then open `http://localhost:3002`.
+Then open `http://localhost:3000`.
+
+Note: the Crossmint docs have you authorize `http://localhost:3000` as an allowed origin for the client key.
 
 ## Test
 
@@ -42,6 +46,7 @@ Fill in your Solana wallet + email + amount, click **Create Order**, then comple
 
 - `pages/index.tsx` - UI + embedded checkout
 - `pages/api/create-order.ts` - Creates the order (server-side)
+- `pages/api/get-order.ts` - Fetches order status (server-side)
 - `package.json` - Minimal dependencies
 
 That's it!
